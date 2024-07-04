@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: bowmeow_member_service
+          uri: http://localhost:8081/
+          predicates:
+            - Path=/members/**
+        - id: bowmeow_payment_service
+          uri: http://localhost:8082/
+          predicates:
+            - Path=/payment/**
+          filters:
+            - name: AuthFilter # JWT 토큰 비교
+        - id: bowmeow_product_service
+          uri: http://localhost:8083/
+          predicates:
+            - Path=/product/**
+          filters:
+            - name: AuthFilter # JWT 토큰 비교
+        - id: bowmeow_basket_service
+          uri: http://localhost:8084/
+          predicates:
+            - Path=/basket/**
+          filters:
+            - name: AuthFilter # JWT 토큰 비교
+        - id: bowmeow_review_service
+          uri: http://localhost:8085/
+          predicates:
+            - Path=/review/**
+          filters:
+            - name: AuthFilter # JWT 토큰 비교
+
