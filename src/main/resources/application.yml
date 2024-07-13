@@ -31,5 +31,5 @@ spring:
           predicates:
             - Path=/reviews/**
           filters:
-            - name: AuthFilter # JWT 토큰 비교
+            - name: JwtAuthenticationFilter # JWT 토큰 비교
 
