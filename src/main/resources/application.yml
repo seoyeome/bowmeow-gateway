@@ -13,23 +13,39 @@ spring:
           predicates:
             - Path=/payments/**
           filters:
-            - name: AuthFilter # JWT 토큰 비교
+            - name: JwtAuthenticationFilter # JWT 토큰 비교
         - id: bowmeow_product_service
           uri: http://localhost:8083/
           predicates:
             - Path=/products/**
           filters:
-            - name: AuthFilter # JWT 토큰 비교
+            - name: JwtAuthenticationFilter # JWT 토큰 비교
         - id: bowmeow_basket_service
           uri: http://localhost:8084/
           predicates:
             - Path=/baskets/**
           filters:
-            - name: AuthFilter # JWT 토큰 비교
+            - name: JwtAuthenticationFilter # JWT 토큰 비교
         - id: bowmeow_review_service
           uri: http://localhost:8085/
           predicates:
             - Path=/reviews/**
           filters:
             - name: JwtAuthenticationFilter # JWT 토큰 비교
+  main:
+    web-application-type: reactive # swagger config 관련
 
+# swagger configuration (with springdoc)
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html # TODO: 이거 좀있다 bow-meow-gateway-ui.html 로 바꾸기
+    tags-sorter: alpha # tag 정렬 기준
+    operations-sorter: alpha # operation 정렬 기준
+    doc-expansion: none # swagger-ui.html 페이지에서 메소드 다 확장된 상태로 조회할 것인지 여부
+  api-docs:
+    path: /v3/api-docs # TODO : 바꿀 수 있으면 바꾸기?
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
+  # true 인 경우 200, 400, 401, 500 등의 형태가 자동으로 조회됨
+  # 대신 200이 자동으로 만들어지지 않기 때문에 임의로 Controller 에서 @ApiResponse(code="200" 필요)
+  override-with-generic-response: false
