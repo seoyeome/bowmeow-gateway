@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.1'
 	id 'io.spring.dependency-management' version '1.1.5'
+	id 'com.google.protobuf' version '0.9.1'
 }
 
 group = 'com.bowmeow'
@@ -37,15 +38,59 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 //	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+//	implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'javax.annotation:javax.annotation-api:1.3.2'
+	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.6.0'
+	implementation 'org.springdoc:springdoc-openapi-starter-webflux-api:2.6.0'
+	implementation 'io.grpc:grpc-netty-shaded:1.56.0'
+	implementation 'io.grpc:grpc-protobuf:1.56.0'
+	implementation 'io.grpc:grpc-stub:1.56.0'
+	implementation 'javax.annotation:javax.annotation-api:1.3.2'
+	implementation 'io.grpc:grpc-netty:1.56.0'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'io.jsonwebtoken:jjwt:0.9.1'
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.6.0'
-	implementation 'org.springdoc:springdoc-openapi-starter-webflux-api:2.6.0'
+	testImplementation 'io.grpc:grpc-netty-shaded:1.56.0'  // gRPC 테스트 의존성 추가
+	testImplementation 'io.grpc:grpc-protobuf:1.56.0'  // gRPC 테스트 의존성 추가
+	testImplementation 'io.grpc:grpc-stub:1.56.0'  // gRPC 테스트 의존성 추가
+	testImplementation 'io.grpc:grpc-netty:1.56.0'
+}
+
+protobuf {
+	protoc {
+		artifact = "com.google.protobuf:protoc:3.21.7"
+	}
+	plugins {
+		grpc {
+			artifact = "io.grpc:protoc-gen-grpc-java:1.56.0"
+		}
+	}
+	generateProtoTasks {
+		all().each { task ->
+			task.plugins {
+				grpc {}
+			}
+		}
+	}
+}
+
+sourceSets {
+	main {
+		proto {
+			srcDir 'src/main/proto'
+		}
+		java {
+			srcDirs 'src/main/java', 'build/generated/source/proto/main/java', 'build/generated/source/proto/main/grpc'
+		}
+		resources {
+			srcDirs = ['src/main/resources']
+			exclude 'src/main/proto/**'
+		}
+	}
 }
 
 dependencyManagement {
@@ -57,4 +102,12 @@ dependencyManagement {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+	dependsOn 'generateProto'
+}
+
+tasks.withType(ProcessResources) {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
