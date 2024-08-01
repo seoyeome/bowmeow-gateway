@@ -1,13 +1,21 @@
+server:
+  port: 8080
+
+grpc:
+  server:
+    host: localhost
+    port: 9090
+
 spring:
   application:
     name: gateway
   cloud:
     gateway:
       routes:
-        - id: bowmeow_member_service
+        - id: bowmeow_user_service
           uri: http://localhost:8081/
           predicates:
-            - Path=/members/**
+            - Path=/users/**
         - id: bowmeow_payment_service
           uri: http://localhost:8082/
           predicates:

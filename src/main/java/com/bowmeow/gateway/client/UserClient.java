@@ -1,11 +1,12 @@
 package com.bowmeow.gateway.client;
 
+import com.bowmeow.user.User;
+import com.bowmeow.user.UserServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import com.bowmeow.gateway.client.UserRequest;
-import com.bowmeow.gateway.client.UserResponse;
-import com.bowmeow.gateway.client.UserServiceGrpc;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserClient {
     private final UserServiceGrpc.UserServiceBlockingStub blockingStub;
 
@@ -16,8 +17,18 @@ public class UserClient {
         blockingStub = UserServiceGrpc.newBlockingStub(channel);
     }
 
-    public UserResponse getUser(String userId) {
-        UserRequest request = UserRequest.newBuilder().setUserId(userId).build();
+    public User.SignUpResponse signUp(String username, String password) {
+        User.SignUpRequest request = User.SignUpRequest.newBuilder()
+                .setUsername(username)
+                .setPassword(password)
+                .build();
+        return blockingStub.signUp(request);
+    }
+
+    public User.UserResponse getUser(String userId) {
+        User.UserRequest request = User.UserRequest.newBuilder()
+                .setUserId(userId)
+                .build();
         return blockingStub.getUser(request);
     }
 }
