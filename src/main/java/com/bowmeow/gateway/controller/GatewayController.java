@@ -2,22 +2,25 @@ package com.bowmeow.gateway.controller;
 
 import com.bowmeow.gateway.service.PaymentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class GatewayController {
 
     private final PaymentService paymentService;
 
-    @PostMapping("/payments/payment") // todo: 이름도변경할거
-    public String getProductInfo_payment() {
-        // String productSno = productService.getProductSno();
-        paymentService.payment("productSno 넣을꺼");
-        return null;
+    /**
+     * 결제
+     */
+    @PostMapping("/payments")
+    public void payment() {
+        log.debug("POST /payments invoke start");
+        paymentService.payment();
+        log.debug("POST /payments invoke end");
     }
 
 }

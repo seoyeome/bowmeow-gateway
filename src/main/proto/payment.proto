@@ -4,8 +4,11 @@ option java_multiple_files = true;
 option java_package = "com.bowmeow.gateway.client"; // 올바른 패키지 경로 설정
 option java_outer_classname = "PaymentProto";
 
+import "google/protobuf/empty.proto";
+
 service PaymentService {
   rpc GetPaymentHist (PaymentRequest) returns (PaymentResponse);
+  rpc Payment (google.protobuf.Empty) returns (google.protobuf.Empty);
 }
 
 message PaymentRequest {
