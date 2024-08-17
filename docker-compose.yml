@@ -16,7 +16,7 @@ services:
   product-service:
     image: bow-meow-product:latest # product Docker 이미지
     ports:
-      - "8081:8080"  # Product 서비스의 외부 포트
+      - "8083:8080"  # Product 서비스의 외부 포트
     environment:
       - SERVICE_ENV=production
       - DB_HOST=bow-meow-product-db
