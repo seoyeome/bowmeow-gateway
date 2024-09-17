@@ -6,6 +6,9 @@ grpc:
     host: localhost
     port: 9090
 
+jwt:
+  secret-key: 'secretto'
+
 spring:
   application:
     name: gateway

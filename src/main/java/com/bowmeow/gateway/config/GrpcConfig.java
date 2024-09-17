@@ -1,6 +1,8 @@
 package com.bowmeow.gateway.config;
 
-import com.bowmeow.gateway.client.UserClient;
+import com.bowmeow.user.UserServiceGrpc;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +17,14 @@ public class GrpcConfig {
     private int grpcPort;
 
     @Bean
-    public UserClient userClient() {
-        return new UserClient(grpcHost, grpcPort);
+    public ManagedChannel userServiceChannel() {
+        return ManagedChannelBuilder.forAddress( grpcHost, grpcPort )
+                .useTransportSecurity()
+                .build();
+    }
+
+    @Bean
+    public UserServiceGrpc.UserServiceBlockingStub userServiceStub( ManagedChannel channel ) {
+        return UserServiceGrpc.newBlockingStub( channel );
     }
 }

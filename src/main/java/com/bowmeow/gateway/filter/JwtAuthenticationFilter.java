@@ -3,31 +3,36 @@ package com.bowmeow.gateway.filter;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 @Component
 public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAuthenticationFilter.Config> {
 
     public JwtAuthenticationFilter() {
-        super( Config.class );
+        super(Config.class);
     }
 
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                return chain.filter(exchange);
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing Authorization header");
             }
 
-            String token = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-            if (token != null && token.startsWith("Bearer ")) {
-                token = token.substring(7);
+            // Authorization 헤더에서 JWT 토큰을 추출
+            String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Authorization header");
             }
+
+            String token = authHeader.substring(7); // "Bearer " 부분을 제거하고 토큰만 추출
 
             try {
                 JWTUtil.validateToken(token);
             } catch (Exception e) {
-                return chain.filter(exchange);
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token");
             }
 
             return chain.filter(exchange);
