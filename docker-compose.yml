@@ -63,6 +63,9 @@ services:
       - ./mysql_init.sql:/docker-entrypoint-initdb.d/mysql_init.sql  # 초기화 스크립트 마운트
     networks:
       - bow-meow-network
+    ports:
+      - "3306:3306"
+
   redis:
     image: redis:latest
     ports:

@@ -23,6 +23,16 @@ message SignUpResponse {
   string message = 2;
 }
 
+message SignInRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message SignInResponse {
+  bool success = 1;
+  string message = 2;
+}
+
 message UserRequest {
   string userId = 1;
 }

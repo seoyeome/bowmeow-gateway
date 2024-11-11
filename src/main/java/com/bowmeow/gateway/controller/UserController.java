@@ -1,9 +1,6 @@
 package com.bowmeow.gateway.controller;
 
-import com.bowmeow.gateway.dto.user.EmailVerificationDto;
-import com.bowmeow.gateway.dto.user.EmailVerificationRequestDto;
-import com.bowmeow.gateway.dto.user.SignUpRequestDto;
-import com.bowmeow.gateway.dto.user.UserDto;
+import com.bowmeow.gateway.dto.user.*;
 import com.bowmeow.gateway.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +28,12 @@ public class UserController {
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody SignUpRequestDto request) {
         String result = userService.signUpUser(request);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/sign-in")
+    public ResponseEntity<String> signIn(@RequestBody SignInRequestDto request) {
+        String result = userService.signInUser(request);
         return ResponseEntity.ok(result);
     }
 
